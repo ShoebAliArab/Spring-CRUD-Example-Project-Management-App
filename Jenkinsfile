@@ -20,8 +20,8 @@ pipeline {
                     sh "docker login -u learndevops119 -p learndevops1"
                     // Build and push Docker image using Docker Hub credentials
                     
-                        sh 'docker build -t learndevops119/spring-crud-app:latest .'
-                        sh 'docker push learndevops119/spring-crud-app:latest'
+                    sh "docker build -t $DOCKER_IMAGE_NAME:$DOCKER_IMAGE_TAG ."
+                    sh "docker push $DOCKER_IMAGE_NAME:$DOCKER_IMAGE_TAG"
                     
                 }
             }
