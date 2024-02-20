@@ -2,6 +2,7 @@
 Clone the GitHub repo
 
 git clone https://github.com/Shoebaliarab/Spring-CRUD-Example-Project-Management-App
+
 cd Spring-CRUD-Example-Project-Management-App
 
 Create a Dockerfile in the root of your project. This file will contain instructions for building the Docker image.
@@ -21,8 +22,10 @@ EXPOSE 8080
 # Specify the command to run on container startup
 CMD ["java", "-jar", "app.jar"]
 
+
 Install docker on the instance  
 Install maven on the instance to build the application and check if it runs
+![Screenshot 2024-02-15 000811](https://github.com/ShoebAliArab/Spring-CRUD-Example-Project-Management-App/assets/129241220/3be3e37e-f17b-47d2-9cef-ecb1de49c0e7)
 Step 1: Download the JDK Binaries
 Go to the URL: https://jdk.java.net/13/ Copy the download link for Linux/x64 build. Then use the below command to download and extract it.
 $ wget https://download.java.net/java/GA/jdk13.0.1/cec27d702aa74d5a8630c65ae61e4305/9/GPL/openjdk-13.0.1_linux-x64_bin.tar.gz
@@ -82,10 +85,14 @@ sudo apt install fontconfig openjdk-17-jre
 java -version
 
 Setup Jenkins install all suggested plugins and setup username and password
-After that make a pipeline project on Jenkins names “DockerPipeliine”
+After that make a pipeline project on Jenkins names “DockerPipeline”
+
+![Screenshot 2024-02-20 121903](https://github.com/ShoebAliArab/Spring-CRUD-Example-Project-Management-App/assets/129241220/63d79995-856e-48c2-ad0d-3f759fee596f)
+
 First enter (Docker, GitHub) credentials in Jenkins and save it as secrettext
 Afterwards write the Jenkins pipeline as shown in GitHub Repo (Filename:Jenkinsfile)
 Setup poll SCM for automatic build when any changes are made.
+![Screenshot 2024-02-20 121853](https://github.com/ShoebAliArab/Spring-CRUD-Example-Project-Management-App/assets/129241220/e07458bf-f5b6-413c-b73e-c78a2f936563)
 Trigger the build manually to check if the application is getting built as intended.
 Whenever the pipeline is triggered and the app is built the app automatically gets updated on the Docker Hub.
 Setup an EKS Cluster to deploy the application
@@ -151,10 +158,14 @@ chmod 700 get_helm.sh
 MYSQL INSTALLATION
  bash
 helm install my-release oci://registry-1.docker.io/bitnamicharts/mysql
+![Screenshot 2024-02-17 170707](https://github.com/ShoebAliArab/Spring-CRUD-Example-Project-Management-App/assets/129241220/b619fc35-e344-4181-bb6a-76b72d001d8e)
 
 Run this command to get administrator credentials of MYSQL
 echo Username: root
   MYSQL_ROOT_PASSWORD=$(kubectl get secret --namespace default my-release-mysql -o jsonpath="{.data.mysql-root-password}" | base64 -d)
+
+![Screenshot 2024-02-17 195342](https://github.com/ShoebAliArab/Spring-CRUD-Example-Project-Management-App/assets/129241220/9a803660-97b0-4d1a-9383-09d2e0f6b0bf)
+
 
 To connect to your database:
 
