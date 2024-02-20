@@ -146,25 +146,38 @@ First enter (Docker, GitHub) credentials in Jenkins and save it as secrettext
 Afterwards write the Jenkins pipeline as shown in GitHub Repo (Filename:Jenkinsfile)
 Setup poll SCM for automatic build when any changes are made.
 ![Screenshot 2024-02-20 121853](https://github.com/ShoebAliArab/Spring-CRUD-Example-Project-Management-App/assets/129241220/e07458bf-f5b6-413c-b73e-c78a2f936563)
+
 Trigger the build manually to check if the application is getting built as intended.
+
 Whenever the pipeline is triggered and the app is built the app automatically gets updated on the Docker Hub.
+
 Setup an EKS Cluster to deploy the application
+
 Name: prod
+
 Use K8S version 1.28
 
+
 Create an IAM role 'eks-cluster-role' with 1 policy attached: AmazonEKSClusterPolicy
+
 Create another IAM role 'eks-node-grp-role' with 3 policies attached: 
+
 (Allows EC2 instances to call AWS services on your behalf.)
+
     - AmazonEKSWorkerNodePolicy
     - AmazonEC2ContainerRegistryReadOnly
     - AmazonEKS_CNI_Policy
 
+
 Choose default VPC, Choose 2 or 3 subnets
+
 Choose a security group which open the ports 22, 80, 8080
+
 cluster endpoint access: public
 
-# For VPC CNI, CoreDNS and kube-proxy, choose the default versions, For CNI, latest and default are 
-# different. But go with default.
+For VPC CNI, CoreDNS and kube-proxy, choose the default versions, For CNI, latest and default are 
+
+different. But go with default.
 
 Click 'Create'. This process will take 10-12 minutes. Wait till your cluster shows up as Active. 
 
@@ -172,14 +185,21 @@ Add Node Groups to our cluster
 
 Now, let’s add the worker nodes where the pods can run
 
+
 Open the cluster > Compute > Add NodeGrp
+
 Name: Worker-eks-nodegrp-1 
+
 Select the role you already created
+
 Leave default values for everything else
 
 AMI - choose the default 1 (Amazon Linux 2)
+
 change desired/minimum/maximum to 1 (from 2)
+
 Enable SSH access. Choose a security group which allows all traffic access 
+
 
 Choose default values for other fields 
 
@@ -190,10 +210,13 @@ Node group creation may take 2-3 minutes
 Connect to a cluster using AWS Configure.Provide your AWS Access Key ID, Secret Access Key, default region, and output format
 
 GO to your Instance install aws cli using 
+
 apt install aws-cli
 
 Install kubectl using 
+
 Sudo snap install kubectl --classic
+
 aws eks --region ap-south-1 update-kubeconfig --name Prod
 
 Check if it you are connected properly to the EKS cluster by using the command 
@@ -203,17 +226,25 @@ Kubectl get nodes
 If there are nodes present which you have created in aws console then you have successfully connected to a cluster
 
 Install Helm 
+
 If you're using Linux, install the binaries with the following commands.
+
 curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 > get_helm.sh
+
 chmod 700 get_helm.sh
+
 ./get_helm.sh
 
 MYSQL INSTALLATION
+
  bash
+
 helm install my-release oci://registry-1.docker.io/bitnamicharts/mysql
+
 ![Screenshot 2024-02-17 170707](https://github.com/ShoebAliArab/Spring-CRUD-Example-Project-Management-App/assets/129241220/b619fc35-e344-4181-bb6a-76b72d001d8e)
 
 Run this command to get administrator credentials of MYSQL
+
 echo Username: root
   MYSQL_ROOT_PASSWORD=$(kubectl get secret --namespace default my-release-mysql -o jsonpath="{.data.mysql-root-password}" | base64 -d)
 
@@ -224,60 +255,103 @@ To connect to your database:
 
   1. Run a pod that you can use as a client:
 kubectl run my-release-mysql-client --rm --tty -i --restart='Never' --image  registry-1.docker.io/bitnami/mysql:8.0.36-debian-11-r20 --namespace default --env MYSQL_ROOT_PASSWORD=$MYSQL_ROOT_PASSWORD --command – bash
+
 make a pv to attach to pvc
+
 After MYSQL pod is active write the YAML for you application.
+
 spring-deployment.yaml
+
 spring-ingress.yaml
+
 spring-service.yaml
+
+
 apply all the files
+
 make the changes in application.properties file on github .
-as you have setup poll scm when you make changes on that file your build will take place automatically and the latest image will be updated on dockerHub and your application will be deployed using that image on EKS cluster.
+
+as you have setup poll scm when you make changes on that file your build will take place automatically and the latest image will be updated on dockerHub and your application will be deployed using that image on 
+
+EKS cluster.
 
 Installing Prometheus and Grafana Dashboard 
+
 add the Helm Stable Charts for your local client. Execute the below command:
+
 helm repo add stable https://charts.helm.sh/stable
+
 Add Prometheus Helm repo
+
 helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+
 Create Prometheus namespace
+
 kubectl create namespace prometheus
+
 Install Prometheus
+
 helm install stable prometheus-community/kube-prometheus-stack -n prometheus
+
 To check whether Prometheus is installed or not use the below command
+
 kubectl get pods -n prometheus
+
 to check the services file (svc) of the Prometheus
+
 kubectl get svc -n prometheus
 
+
 Grafana will be coming along with Prometheus as the stable version
+
 This output is conformation that our Prometheus is installed successfully
+
 there is no need of installing Grafana as a separate tool it comes along with Prometheus
+
 let’s expose Prometheus and Grafana to the external world through loadbalancer
+
 
 kubectl edit svc stable-kube-prometheus-sta-prometheus -n Prometheus
 
 edit the type from ClusterIP to LoadBalancer
 ![Screenshot 2024-02-20 124552](https://github.com/ShoebAliArab/Spring-CRUD-Example-Project-Management-App/assets/129241220/301697c5-8e2e-4e73-8df9-d02248b5cf41)
+
 ![Screenshot 2024-02-20 124612](https://github.com/ShoebAliArab/Spring-CRUD-Example-Project-Management-App/assets/129241220/a1a0a64c-038a-4999-aad5-f9115bb9c015)
 
+
 we can use a Prometheus UI for monitoring the EKSbut the UI of Prometheus is not a convent for the user Grafana will extract the matrix from the Prometheus UI and show it in a user-friendly manner
+
 let’s change the SVC file of the Grafana and expose it to the outer world
+
 command to edit the SVC file of grafana
+
 kubectl edit svc stable-grafana -n prometheus
+
 edit the type from ClusterIP to LoadBalancer
+
 use the link of the LoadBalancer and access from the Browser
 
 kubectl get secret --namespace prometheus stable-grafana -o jsonpath="{.data.admin-password}" | base64 --decode ; echo
+
 use the above command to get the password
+
 the user name is admin
+
 Create a Dashboard in Grafana
+
 create a Dashboard by importing
 
 ![Screenshot 2024-02-20 115747](https://github.com/ShoebAliArab/Spring-CRUD-Example-Project-Management-App/assets/129241220/8670ba1d-8c29-4379-ad3e-2d0790ebbc74)
 
+
 click on Import and import the dashboard with numbers
+
 ![Screenshot 2024-02-20 115841](https://github.com/ShoebAliArab/Spring-CRUD-Example-Project-Management-App/assets/129241220/58a3367d-6bca-432a-8af5-5c3b192276c2)
 
 
+
 there are plenty of ready templates to use the pre-existing templates and modify based on our desired
+
 ![Screenshot 2024-02-20 115848](https://github.com/ShoebAliArab/Spring-CRUD-Example-Project-Management-App/assets/129241220/37622cd7-68f8-473d-b32d-1da76b1fff30)
 
 
