@@ -94,7 +94,7 @@
                     <schemas>
                         <schema>bugtracker</schema>
                     </schemas>
-                    <url>jdbc:mysql://localhost:3306?serverTimezone=UTC</url>
+                    <url>jdbc:mysql://my-release-mysql:3306?serverTimezone=UTC</url>
                     <user>learn</user>
                     <password>dJXMUJCzDg</password>
                 </configuration>
