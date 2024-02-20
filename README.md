@@ -202,6 +202,9 @@ let’s expose Prometheus and Grafana to the external world through loadbalancer
 kubectl edit svc stable-kube-prometheus-sta-prometheus -n Prometheus
 
 edit the type from ClusterIP to LoadBalancer
+![Screenshot 2024-02-20 124552](https://github.com/ShoebAliArab/Spring-CRUD-Example-Project-Management-App/assets/129241220/301697c5-8e2e-4e73-8df9-d02248b5cf41)
+![Screenshot 2024-02-20 124612](https://github.com/ShoebAliArab/Spring-CRUD-Example-Project-Management-App/assets/129241220/a1a0a64c-038a-4999-aad5-f9115bb9c015)
+
 we can use a Prometheus UI for monitoring the EKSbut the UI of Prometheus is not a convent for the user Grafana will extract the matrix from the Prometheus UI and show it in a user-friendly manner
 let’s change the SVC file of the Grafana and expose it to the outer world
 command to edit the SVC file of grafana
@@ -214,11 +217,30 @@ use the above command to get the password
 the user name is admin
 Create a Dashboard in Grafana
 create a Dashboard by importing
+
+![Screenshot 2024-02-20 115747](https://github.com/ShoebAliArab/Spring-CRUD-Example-Project-Management-App/assets/129241220/8670ba1d-8c29-4379-ad3e-2d0790ebbc74)
+
 click on Import and import the dashboard with numbers
+![Screenshot 2024-02-20 115841](https://github.com/ShoebAliArab/Spring-CRUD-Example-Project-Management-App/assets/129241220/58a3367d-6bca-432a-8af5-5c3b192276c2)
+
+
 there are plenty of ready templates to use the pre-existing templates and modify based on our desired
+![Screenshot 2024-02-20 115848](https://github.com/ShoebAliArab/Spring-CRUD-Example-Project-Management-App/assets/129241220/37622cd7-68f8-473d-b32d-1da76b1fff30)
+
+
 it uses a Prometheus.
+
+![Screenshot 2024-02-20 115857](https://github.com/ShoebAliArab/Spring-CRUD-Example-Project-Management-App/assets/129241220/00b9de80-d00a-4488-9ff0-6a1874d8ed49)
+
+
+
 click on the Import the Entire data of the cluster
+
+
 where we can able to see the entire data of the EKS cluster
+
+![Screenshot 2024-02-20 124543](https://github.com/ShoebAliArab/Spring-CRUD-Example-Project-Management-App/assets/129241220/a4123d1e-9b93-4b76-9971-8a5e54ef40d3)
+
 1. CPU and RAM use
 2. pods in a specific namespace
 3. Pod up history
