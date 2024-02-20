@@ -69,40 +69,72 @@ Installing Maven on Linux/Ubuntu
 We will install Maven in a similar way that we have installed JDK in the Linux system.
 
 Step 1: Download the Maven Binaries
+
 Go to the URL: https://maven.apache.org/download.cgi Copy the link for the “Binary tar.gz archive” file. Then run the following commands to download and untar it.
+
 $ wget https://mirrors.estointernet.in/apache/maven/maven-3/3.6.3/binaries/apache-maven-3.6.3-bin.tar.gz
+
 $ tar -xvf apache-maven-3.6.3-bin.tar.gz
+
 $ mv apache-maven-3.6.3 /opt/
+
 Step 2: Setting M2_HOME and Path Variables
+
 Add the following lines to the user profile file (.profile).
+
 M2_HOME='/opt/apache-maven-3.6.3'
+
 PATH="$M2_HOME/bin:$PATH"
+
 export PATH
+
 Relaunch the terminal or execute source .profile to apply the changes.
+
 Step 3: Verify the Maven installation
+
 Execute mvn -version command and it should produce the following output.
+
 $ mvn -version
+
 Apache Maven 3.6.3 (cecedd343002696d0abb50b32b541b8a6ba2883f)
+
 Maven home: /opt/apache-maven-3.6.3
+
 Java version: 13.0.1, vendor: Oracle Corporation, runtime: /opt/jdk-13.0.1
+
 Default locale: en, platform encoding: UTF-8
+
 OS name: "linux", version: "4.15.0-47-generic", arch: "amd64", family: "unix"
+
 $
 
+
+
 Install Jenkins on the instance 
+
 sudo wget -O /usr/share/keyrings/jenkins-keyring.asc \
+
+  
   https://pkg.jenkins.io/debian-stable/jenkins.io-2023.key
 echo deb [signed-by=/usr/share/keyrings/jenkins-keyring.asc] \
   https://pkg.jenkins.io/debian-stable binary/ | sudo tee \
   /etc/apt/sources.list.d/jenkins.list > /dev/null
+
 sudo apt-get update
+
 sudo apt-get install Jenkins
 
+
 Jenkins requires Java to run, yet not all Linux distributions include Java by default. Additionally, not all Java versions are compatible with Jenkins.
+
 There are multiple Java implementations which you can use. OpenJDK is the most popular one at the moment, we will use it in this guide.
+
 Update the Debian apt repositories, install OpenJDK 17, and check the installation with the commands:
+
 sudo apt update
+
 sudo apt install fontconfig openjdk-17-jre
+
 java -version
 
 Setup Jenkins install all suggested plugins and setup username and password
