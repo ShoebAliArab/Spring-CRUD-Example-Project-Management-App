@@ -1,0 +1,42 @@
+name: Build and Publish Container
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build-and-publish:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Java
+      uses: actions/setup-java@v2
+      
+
+    - name: Run Maven and Create Dockerfile
+      run: |
+        echo "RELEASE_VERSION-5(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)" | sed 's/-SNAPSHOT//'
+        cat > Dockerfile << EOL
+        FROM ghcr.io/usps/ptr2/base-images/akka-builder-consumer:6.0.8
+        WORKDIR ${{ env.WORKING_DIRECTORY }}/systemtest-restapi/target
+        EOL
+
+    - name: Build, Scan, and Publish Container Image
+      uses: usps/fast-track-container-image-action@v1.0.0
+      with:
+        registry: ${{ env.CONTAINER_REGISTRY }}
+        username: ${{ env.CONTAINER_REGISTRY_USERNAME }}
+        password: ${{ env.CONTAINER_REGISTRY_PASSWORD }}
+        version: 0.2.0
+        tags: version
+        manifest-path: pom.xml
+        file: Dockerfile
+        severity-cutoff: critical
+        workflow: CD
