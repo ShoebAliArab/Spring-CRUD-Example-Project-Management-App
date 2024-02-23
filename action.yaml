@@ -28,15 +28,15 @@ jobs:
         echo "RELEASE_VERSION-5(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)" | sed 's/-SNAPSHOT//'
         cat > Dockerfile << EOL
         FROM ghcr.io/usps/ptr2/base-images/akka-builder-consumer:6.0.8
-        WORKDIR ${{ env.WORKING_DIRECTORY }}/systemtest-restapi/target
+        WORKDIR ${{ vars.WORKING_DIRECTORY }}/systemtest-restapi/target
         EOL
 
     - name: Build, Scan, and Publish Container Image
       uses: usps/fast-track-container-image-action@v1.0.0
       with:
         registry: ${{ vars.CONTAINER_REGISTRY }}
-        username: ${{ vars.CONTAINER_REGISTRY_USERNAME }}
-        password: ${{ vars.CONTAINER_REGISTRY_PASSWORD }}
+        username: ${{ secrets.CONTAINER_REGISTRY_USERNAME }}
+        password: ${{ secrets.CONTAINER_REGISTRY_PASSWORD }}
         version: 0.2.0
         tags: version
         manifest-path: pom.xml
